@@ -20,6 +20,44 @@ servers:
         default: echojs.com
         description: The API hostname, eg example.com
 paths:
+  /login:
+    get:
+      tags:
+        - Auth
+      summary: Login
+      description: Returns user auth keys
+      operationId: login
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+        - in: query
+          name: password
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+  /logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout
+      description: Clears the user session.
+      operationId: logout
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogoutResponse"
+
   /getnews/{sort}/{start}/{count}:
     get:
       tags:
@@ -31,7 +69,7 @@ paths:
         - in: path
           name: sort
           schema:
-            $ref: '#/components/schemas/SortType'
+            $ref: "#/components/schemas/SortType"
           required: true
           description: Sort.
         - in: path
@@ -52,11 +90,52 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetNewsResponse'
-  /api/getcomments/{newsId}:
-    get:
+                $ref: "#/components/schemas/GetNewsResponse"
+
+  /submit:
+    post:
       tags:
         - News
+      summary: Submit news
+      description: Create a new news item.
+      operationId: submit
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/SubmitRequestBody"
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubmitResponse"
+
+  /votenews:
+    post:
+      tags:
+        - News
+      summary: Vote news
+      description: Vote on a news item.
+      operationId: voteNews
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/VoteNewsRequestBody"      
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VoteNewsResponse"
+
+  /getcomments/{newsId}:
+    get:
+      tags:
+        - Comments
       summary: Get comments
       description: Returns news comments.
       operationId: getComments
@@ -73,21 +152,194 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetCommentsResponse'
+                $ref: "#/components/schemas/GetCommentsResponse"
+
+  /postcomment:
+    post:
+      tags:
+        - Comments
+      summary: Create/update/delete a comment
+      description: |
+        Create/update/delete a comment.
+
+        1. If comment_id is -1 insert a new comment into the specified news.
+        2. If comment_id is an already existing comment in the context of the specified news, updates the comment.
+        3. If comment_id is an already existing comment in the context of the specified news, but the comment is an empty string, delete the comment.
+
+        The parent_id is only used for inserts (when comment_id == -1), otherwise
+        is ignored.
+      operationId: comment
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PostCommentRequestBody'
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostCommentResponse"
+
+  /votecomment:
+    post:
+      tags:
+        - Comments
+      summary: Vote on a comment
+      description: Upvote or downvote a comment.
+      operationId: voteComment
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VoteCommentRequestBody'
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VoteCommentResponse"
+
 components:
   schemas:
+    SubmitRequestBody:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          example: Awesome Blog Post
+        url:
+          type: string
+          format: url
+          example: https://example.com/blog/post
+        text:
+          type: string
+          example: News content text
+        news_id:
+          type: number
+    VoteNewsRequestBody: 
+      type: object
+      required:
+        - news_id
+        - vote_type
+      properties:
+        news_id:
+          type: number
+          example: 123
+        vote_type:
+          $ref: "#/components/schemas/VoteType"
+    PostCommentRequestBody:
+      type: object
+      required:
+        - comment
+      properties:
+        news_id:
+          type: number
+          example: 123
+        comment_id:
+          type: number
+          example: 123
+        parent_id:
+          type: number
+          example: 123
+        comment:
+          type: string
+          example: Great comment
+        vote_type:
+          $ref: "#/components/schemas/VoteType"
+    VoteCommentRequestBody:
+      type: object
+      required:
+        - comment_id
+        - vote_type
+      properties:
+        comment_id:
+          type: number
+          example: 123
+        vote_type:
+          $ref: "#/components/schemas/VoteType"
     GetCommentsResponse:
-     allOf:  
-        - $ref: '#/components/schemas/GenericResponse'
+      allOf:
+        - $ref: "#/components/schemas/GenericResponse"
         - type: object
-          required:
-            - comments
-            - status
           properties:
             comments:
               type: array
               items:
-                $ref: '#/components/schemas/Comment'
+                $ref: "#/components/schemas/Comment"
+    LoginResponse:
+      allOf:
+        - $ref: "#/components/schemas/GenericResponse"
+        - type: object
+          properties:
+            auth:
+              type: string
+            apisecret:
+              type: string
+    LogoutResponse:
+      allOf:
+        - $ref: "#/components/schemas/GenericResponse"
+    PostCommentResponse:
+      allOf:
+        - $ref: "#/components/schemas/GenericResponse"
+        - type: object
+          properties:
+            op:
+              $ref: "#/components/schemas/PostCommentOp"
+            comment_id:
+              type: number
+              example: 123
+              description: The updated comment id, or the new comment id.
+            parent_id:
+              type: number
+              example: 123
+            news_id:
+              type: number
+              example: 123
+    VoteNewsResponse:
+      allOf:
+        - $ref: "#/components/schemas/GenericResponse"
+    SubmitResponse:
+      allOf:
+        - $ref: "#/components/schemas/GenericResponse"
+        - type: object
+          properties:
+            news_id:
+              type: number
+              example: 123
+    VoteCommentResponse:
+      allOf:
+        - $ref: "#/components/schemas/GenericResponse"
+        - type: object
+          properties:
+            comment_id:
+              type: number
+              example: 123
+    GetNewsResponse:
+      allOf:
+        - $ref: "#/components/schemas/GenericResponse"
+        - type: object
+          required:
+            - news
+          properties:
+            news:
+              type: array
+              items:
+                $ref: "#/components/schemas/NewsItem"
+    GenericResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: "#/components/schemas/ResponseStatus"
+        error:
+          type: string
+          example: "An error occurred"
     Comment:
       type: object
       required:
@@ -97,56 +349,42 @@ components:
         - username
         - replies
       properties:
-        body: 
+        body:
           type: string
-        ctime: 
+        ctime:
           type: number
-        up: 
+        up:
           type: number
-        username: 
+        username:
           type: string
-        replies: 
+        replies:
           type: array
           items:
-            $ref: '#/components/schemas/Comment'
-        voted: 
-          $ref: '#/components/schemas/VoteType'
-    GetNewsResponse:
-      allOf:  
-        - $ref: '#/components/schemas/GenericResponse'
-        - type: object
-          required:
-            - news
-          properties:
-            news:
-              type: array
-              items:
-                $ref: '#/components/schemas/NewsItem'
-    GenericResponse:
-      type: object
-      required:
-        - status
-      properties:
-        status: 
-          $ref: '#/components/schemas/ResponseStatus'
-        error: 
-          type: string
-          example: 'An error occurred'
+            $ref: "#/components/schemas/Comment"
+        voted:
+          $ref: "#/components/schemas/VoteType"
     ResponseStatus:
       type: string
-      example: 'ok'
+      example: "ok"
       enum:
         - ok
         - err
     VoteType:
       type: string
-      example: 'up'
+      example: "up"
       enum:
         - up
         - down
+    PostCommentOp:
+      type: string
+      example: "insert"
+      enum:
+        - insert
+        - update
+        - delete
     SortType:
       type: string
-      example: 'top'
+      example: "top"
       enum:
         - latest
         - top
@@ -162,28 +400,28 @@ components:
         - comments
         - username
       properties:
-        id: 
+        id:
           type: string
-          example: '1'
-        url: 
+          example: "1"
+        url:
           type: string
-          example: 'https://example.com/blog/post'
-        up: 
+          example: "https://example.com/blog/post"
+        up:
           type: string
-          example: '1'
-        ctime: 
+          example: "1"
+        ctime:
           type: string
-          example: '1234567890'
-        title: 
+          example: "1234567890"
+        title:
           type: string
-          example: 'Awesome Post About JS!'
-        comments: 
+          example: "Awesome Post About JS!"
+        comments:
           type: string
-          example: '1'
-        down: 
+          example: "1"
+        down:
           type: string
-          example: '1'
-        username: 
+          example: "1"
+        username:
           type: string
-          example: 'badsyntax'
+          example: "badsyntax"
       description: A news item.
