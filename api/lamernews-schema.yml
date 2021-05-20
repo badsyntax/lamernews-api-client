@@ -1,0 +1,189 @@
+openapi: 3.0.3
+info:
+  title: Lamer News API
+  description: |
+    Lamer News API HTTP specification.
+  contact:
+    name: Lamer News Repository
+    url: https://github.com/antirez/lamernews
+  license:
+    name: CC0 1.0 Universal
+    url: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+  version: 0.0.1
+externalDocs:
+  description: Find out more about Lamer News.
+  url: https://github.com/antirez/lamernews
+servers:
+  - url: https://{host}/api
+    variables:
+      host:
+        default: echojs.com
+        description: The API hostname, eg example.com
+paths:
+  /getnews/{sort}/{start}/{count}:
+    get:
+      tags:
+        - News
+      summary: Get news
+      description: Returns news items.
+      operationId: getNews
+      parameters:
+        - in: path
+          name: sort
+          schema:
+            $ref: '#/components/schemas/SortType'
+          required: true
+          description: Sort.
+        - in: path
+          name: start
+          schema:
+            type: number
+          required: true
+          description: Start.
+        - in: path
+          name: count
+          schema:
+            type: number
+          required: true
+          description: Count.
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetNewsResponse'
+  /api/getcomments/{newsId}:
+    get:
+      tags:
+        - News
+      summary: Get comments
+      description: Returns news comments.
+      operationId: getComments
+      parameters:
+        - in: path
+          name: newsId
+          schema:
+            type: number
+          required: true
+          description: News id to get comments for.
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCommentsResponse'
+components:
+  schemas:
+    GetCommentsResponse:
+     allOf:  
+        - $ref: '#/components/schemas/GenericResponse'
+        - type: object
+          required:
+            - comments
+            - status
+          properties:
+            comments:
+              type: array
+              items:
+                $ref: '#/components/schemas/Comment'
+    Comment:
+      type: object
+      required:
+        - body
+        - ctime
+        - up
+        - username
+        - replies
+      properties:
+        body: 
+          type: string
+        ctime: 
+          type: number
+        up: 
+          type: number
+        username: 
+          type: string
+        replies: 
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+        voted: 
+          $ref: '#/components/schemas/VoteType'
+    GetNewsResponse:
+      allOf:  
+        - $ref: '#/components/schemas/GenericResponse'
+        - type: object
+          required:
+            - news
+          properties:
+            news:
+              type: array
+              items:
+                $ref: '#/components/schemas/NewsItem'
+    GenericResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status: 
+          $ref: '#/components/schemas/ResponseStatus'
+        error: 
+          type: string
+          example: 'An error occurred'
+    ResponseStatus:
+      type: string
+      example: 'ok'
+      enum:
+        - ok
+        - err
+    VoteType:
+      type: string
+      example: 'up'
+      enum:
+        - up
+        - down
+    SortType:
+      type: string
+      example: 'top'
+      enum:
+        - latest
+        - top
+    NewsItem:
+      type: object
+      required:
+        - id
+        - url
+        - up
+        - down
+        - ctime
+        - title
+        - comments
+        - username
+      properties:
+        id: 
+          type: string
+          example: '1'
+        url: 
+          type: string
+          example: 'https://example.com/blog/post'
+        up: 
+          type: string
+          example: '1'
+        ctime: 
+          type: string
+          example: '1234567890'
+        title: 
+          type: string
+          example: 'Awesome Post About JS!'
+        comments: 
+          type: string
+          example: '1'
+        down: 
+          type: string
+          example: '1'
+        username: 
+          type: string
+          example: 'badsyntax'
+      description: A news item.

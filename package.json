@@ -1,0 +1,48 @@
+{
+  "name": "lamernews-api-client",
+  "version": "0.0.1",
+  "description": "API client library for the Lamer News API",
+  "author": "Richard Willis <willis.rh@gmail.com>",
+  "license": "MIT",
+  "maintainers": [
+    "Richard Willis <willis.rh@gmail.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/badsyntax/lamernews-api-client"
+  },
+  "bugs": {
+    "url": "https://github.com/badsyntax/lamernews-api-client/issues"
+  },
+  "keywords": [
+    "lamernews",
+    "typescript",
+    "fetch",
+    "api",
+    "client",
+    "sdk"
+  ],
+  "engines": {
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
+  "type": "module",
+  "exports": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib",
+    "!**/*.test.*",
+    "!**/*.json",
+    "README.md"
+  ],
+  "scripts": {
+    "generate": "openapi-generator-cli generate -i ./api/lamernews-schema.yml -g typescript-fetch -o ./src --additional-properties=typescriptThreePlus=true --enable-post-process-file",
+    "pregenerate": "rimraf ./src ./lib",
+    "build": "tsc -p tsconfig.json",
+    "prebuild": "npm run generate"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.3.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.2.4"
+  }
+}
