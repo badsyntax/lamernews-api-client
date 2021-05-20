@@ -7,8 +7,7 @@
     "rootDir": "src",
     "moduleResolution": "node",
     "declaration": true,
-    "inlineSourceMap": true,
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "resolveJsonModule": true,
     "strict": true,
     "noUnusedLocals": false,
@@ -19,11 +18,10 @@
     "listEmittedFiles": false,
     "listFiles": false,
     "pretty": true,
-    "jsx": "preserve",
-    "lib": ["es2017", "dom"],
-    "typeRoots": ["node_modules/@types"]
+    "inlineSourceMap": false,
+    "sourceMap": false,
+    "lib": ["ES2020", "DOM"]
   },
   "include": ["src"],
-  "exclude": ["node_modules/**"],
-  "compileOnSave": false,
+  "exclude": ["node_modules/**"]
 }
