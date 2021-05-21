@@ -1,6 +1,6 @@
 {
   "name": "lamernews-api-client",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "API client library for the Lamer News API",
   "author": "Richard Willis <willis.rh@gmail.com>",
   "license": "MIT",
@@ -26,7 +26,11 @@
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
   },
   "type": "module",
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
     "lib",

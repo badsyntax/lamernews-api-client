@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/lamernews-api-client.svg)](https://www.npmjs.com/package/lamernews-api-client)
 
-A JavaScript API client for the Lamer News API, provided with TypeScript types.
+A JavaScript API client for the Lamer News API with included TypeScript definitions.
 
 **Note this package is still under development.**
 
@@ -21,11 +21,9 @@ Usage:
 ```js
 import { Configuration, NewsApi, SortType } from 'lamernews-api-client';
 
-const configParams = {
+const apiConfig = new Configuration({
   basePath: 'https://echojs.com',
-};
-
-const apiConfig = new Configuration(configParams);
+});
 
 const newsApi = new NewsApi(apiConfig);
 
