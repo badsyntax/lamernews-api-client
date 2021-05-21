@@ -42,7 +42,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/LoginResponse"
+                $ref: '#/components/schemas/LoginResponse'
   /logout:
     post:
       tags:
@@ -56,7 +56,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/LogoutResponse"
+                $ref: '#/components/schemas/LogoutResponse'
 
   /getnews/{sort}/{start}/{count}:
     get:
@@ -69,7 +69,7 @@ paths:
         - in: path
           name: sort
           schema:
-            $ref: "#/components/schemas/SortType"
+            $ref: '#/components/schemas/SortType'
           required: true
           description: Sort.
         - in: path
@@ -90,7 +90,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetNewsResponse"
+                $ref: '#/components/schemas/GetNewsResponse'
 
   /submit:
     post:
@@ -103,14 +103,14 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: "#/components/schemas/SubmitRequestBody"
+              $ref: '#/components/schemas/SubmitRequestBody'
       responses:
         200:
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SubmitResponse"
+                $ref: '#/components/schemas/SubmitResponse'
 
   /votenews:
     post:
@@ -123,14 +123,14 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: "#/components/schemas/VoteNewsRequestBody"      
+              $ref: '#/components/schemas/VoteNewsRequestBody'
       responses:
         200:
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VoteNewsResponse"
+                $ref: '#/components/schemas/VoteNewsResponse'
 
   /getcomments/{newsId}:
     get:
@@ -152,7 +152,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetCommentsResponse"
+                $ref: '#/components/schemas/GetCommentsResponse'
 
   /postcomment:
     post:
@@ -180,7 +180,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PostCommentResponse"
+                $ref: '#/components/schemas/PostCommentResponse'
 
   /votecomment:
     post:
@@ -200,7 +200,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VoteCommentResponse"
+                $ref: '#/components/schemas/VoteCommentResponse'
 
 components:
   schemas:
@@ -221,7 +221,7 @@ components:
           example: News content text
         news_id:
           type: number
-    VoteNewsRequestBody: 
+    VoteNewsRequestBody:
       type: object
       required:
         - news_id
@@ -231,7 +231,7 @@ components:
           type: number
           example: 123
         vote_type:
-          $ref: "#/components/schemas/VoteType"
+          $ref: '#/components/schemas/VoteType'
     PostCommentRequestBody:
       type: object
       required:
@@ -250,7 +250,7 @@ components:
           type: string
           example: Great comment
         vote_type:
-          $ref: "#/components/schemas/VoteType"
+          $ref: '#/components/schemas/VoteType'
     VoteCommentRequestBody:
       type: object
       required:
@@ -261,19 +261,19 @@ components:
           type: number
           example: 123
         vote_type:
-          $ref: "#/components/schemas/VoteType"
+          $ref: '#/components/schemas/VoteType'
     GetCommentsResponse:
       allOf:
-        - $ref: "#/components/schemas/GenericResponse"
+        - $ref: '#/components/schemas/GenericResponse'
         - type: object
           properties:
             comments:
               type: array
               items:
-                $ref: "#/components/schemas/Comment"
+                $ref: '#/components/schemas/Comment'
     LoginResponse:
       allOf:
-        - $ref: "#/components/schemas/GenericResponse"
+        - $ref: '#/components/schemas/GenericResponse'
         - type: object
           properties:
             auth:
@@ -282,14 +282,14 @@ components:
               type: string
     LogoutResponse:
       allOf:
-        - $ref: "#/components/schemas/GenericResponse"
+        - $ref: '#/components/schemas/GenericResponse'
     PostCommentResponse:
       allOf:
-        - $ref: "#/components/schemas/GenericResponse"
+        - $ref: '#/components/schemas/GenericResponse'
         - type: object
           properties:
             op:
-              $ref: "#/components/schemas/PostCommentOp"
+              $ref: '#/components/schemas/PostCommentOp'
             comment_id:
               type: number
               example: 123
@@ -302,10 +302,10 @@ components:
               example: 123
     VoteNewsResponse:
       allOf:
-        - $ref: "#/components/schemas/GenericResponse"
+        - $ref: '#/components/schemas/GenericResponse'
     SubmitResponse:
       allOf:
-        - $ref: "#/components/schemas/GenericResponse"
+        - $ref: '#/components/schemas/GenericResponse'
         - type: object
           properties:
             news_id:
@@ -313,7 +313,7 @@ components:
               example: 123
     VoteCommentResponse:
       allOf:
-        - $ref: "#/components/schemas/GenericResponse"
+        - $ref: '#/components/schemas/GenericResponse'
         - type: object
           properties:
             comment_id:
@@ -321,7 +321,7 @@ components:
               example: 123
     GetNewsResponse:
       allOf:
-        - $ref: "#/components/schemas/GenericResponse"
+        - $ref: '#/components/schemas/GenericResponse'
         - type: object
           required:
             - news
@@ -329,17 +329,17 @@ components:
             news:
               type: array
               items:
-                $ref: "#/components/schemas/NewsItem"
+                $ref: '#/components/schemas/NewsItem'
     GenericResponse:
       type: object
       required:
         - status
       properties:
         status:
-          $ref: "#/components/schemas/ResponseStatus"
+          $ref: '#/components/schemas/ResponseStatus'
         error:
           type: string
-          example: "An error occurred"
+          example: 'An error occurred'
     Comment:
       type: object
       required:
@@ -360,31 +360,31 @@ components:
         replies:
           type: array
           items:
-            $ref: "#/components/schemas/Comment"
+            $ref: '#/components/schemas/Comment'
         voted:
-          $ref: "#/components/schemas/VoteType"
+          $ref: '#/components/schemas/VoteType'
     ResponseStatus:
       type: string
-      example: "ok"
+      example: 'ok'
       enum:
         - ok
         - err
     VoteType:
       type: string
-      example: "up"
+      example: 'up'
       enum:
         - up
         - down
     PostCommentOp:
       type: string
-      example: "insert"
+      example: 'insert'
       enum:
         - insert
         - update
         - delete
     SortType:
       type: string
-      example: "top"
+      example: 'top'
       enum:
         - latest
         - top
@@ -402,26 +402,26 @@ components:
       properties:
         id:
           type: string
-          example: "1"
+          example: '1'
         url:
           type: string
-          example: "https://example.com/blog/post"
+          example: 'https://example.com/blog/post'
         up:
           type: string
-          example: "1"
+          example: '1'
         ctime:
           type: string
-          example: "1234567890"
+          example: '1234567890'
         title:
           type: string
-          example: "Awesome Post About JS!"
+          example: 'Awesome Post About JS!'
         comments:
           type: string
-          example: "1"
+          example: '1'
         down:
           type: string
-          example: "1"
+          example: '1'
         username:
           type: string
-          example: "badsyntax"
+          example: 'badsyntax'
       description: A news item.
