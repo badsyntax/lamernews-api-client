@@ -16,5 +16,13 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "editor.formatOnSave": true,
-  "cSpell.words": ["lamernews"]
+  "cSpell.words": [
+    "echojs",
+    "getcomments",
+    "getnews",
+    "lamernews",
+    "postcomment",
+    "votecomment",
+    "votenews"
+  ]
 }
