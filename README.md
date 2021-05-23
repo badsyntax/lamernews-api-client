@@ -108,7 +108,7 @@ authApi
   .then((data) => {
     const { auth, apisecret } = data;
     document.cookie =
-      'auth=' + r.auth + '; expires=Thu, 1 Aug 2030 20:00:00 UTC; path=/';
+      'auth=' + auth + '; expires=Thu, 1 Aug 2030 20:00:00 UTC; path=/';
     return newsApi.voteNews({
       newsId: newsId,
       voteType: VoteType.Up,
