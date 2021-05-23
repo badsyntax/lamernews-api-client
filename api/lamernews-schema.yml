@@ -30,10 +30,12 @@ paths:
       parameters:
         - in: query
           name: username
+          required: true
           schema:
             type: string
         - in: query
           name: password
+          required: true
           schema:
             type: string
       responses:
@@ -103,7 +105,7 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/SubmitRequestBody'
+              $ref: '#/components/schemas/SubmitRequest'
       responses:
         200:
           description: Successful operation
@@ -119,11 +121,14 @@ paths:
       summary: Vote news
       description: Vote on a news item.
       operationId: voteNews
+      security:
+        - Cookie: []
       requestBody:
+        required: true
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/VoteNewsRequestBody'
+              $ref: '#/components/schemas/VoteNewsRequest'
       responses:
         200:
           description: Successful operation
@@ -173,7 +178,7 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PostCommentRequestBody'
+              $ref: '#/components/schemas/PostCommentRequest'
       responses:
         200:
           description: Successful operation
@@ -193,7 +198,7 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/VoteCommentRequestBody'
+              $ref: '#/components/schemas/VoteCommentRequest'
       responses:
         200:
           description: Successful operation
@@ -203,8 +208,13 @@ paths:
                 $ref: '#/components/schemas/VoteCommentResponse'
 
 components:
+  securitySchemes:
+    Cookie:
+      type: apiKey
+      in: cookie
+      name: auth
   schemas:
-    SubmitRequestBody:
+    SubmitRequest:
       type: object
       required:
         - title
@@ -221,18 +231,22 @@ components:
           example: News content text
         news_id:
           type: number
-    VoteNewsRequestBody:
-      type: object
+    VoteNewsRequest:
       required:
+        - apisecret
         - news_id
         - vote_type
-      properties:
-        news_id:
-          type: number
-          example: 123
-        vote_type:
-          $ref: '#/components/schemas/VoteType'
-    PostCommentRequestBody:
+      allOf:
+        - $ref: '#/components/schemas/AuthenticatedRequest'
+        - type: object
+          properties:
+            news_id:
+              type: number
+              example: 123
+            vote_type:
+              type: string
+              $ref: '#/components/schemas/VoteType'
+    PostCommentRequest:
       type: object
       required:
         - comment
@@ -251,7 +265,7 @@ components:
           example: Great comment
         vote_type:
           $ref: '#/components/schemas/VoteType'
-    VoteCommentRequestBody:
+    VoteCommentRequest:
       type: object
       required:
         - comment_id
@@ -340,6 +354,14 @@ components:
         error:
           type: string
           example: 'An error occurred'
+    AuthenticatedRequest:
+      type: object
+      required:
+        - apisecret
+      properties:
+        apisecret:
+          type: string
+          example: '123456789abcdefgh'
     Comment:
       type: object
       required:
